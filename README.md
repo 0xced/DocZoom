@@ -1,7 +1,7 @@
 About
 =====
 
-**DocZoom** is an Xcode plugin that makes pinch to zoom usable in the documentation browser.
+**DocZoom** is an Xcode plugin that makes Pinch-to-Zoom behave like Safari in the documentation browser instead of zooming like mad.
 
 Installation
 ============
