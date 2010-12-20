@@ -16,7 +16,7 @@ static CGFloat cumulativeMagnifyDelta = 0.0;
 static BOOL canZoomIn = YES;
 static BOOL canZoomOut = YES;
 
-void magnifyWithEvent(id self, SEL _cmd, NSEvent *event)
+void docZoom_magnifyWithEvent(id self, SEL _cmd, NSEvent *event)
 {
 	id webView = [self performSelector:@selector(webView)];
 	CGFloat threshold = [NSEvent standardMagnificationThreshold];
@@ -37,7 +37,7 @@ void magnifyWithEvent(id self, SEL _cmd, NSEvent *event)
 	}
 }
 
-void beginGestureWithEvent(id self, SEL _cmd, NSEvent *event)
+void docZoom_beginGestureWithEvent(id self, SEL _cmd, NSEvent *event)
 {
 	cumulativeMagnifyDelta	= 0.0;
 	canZoomIn = YES;
@@ -52,11 +52,13 @@ void beginGestureWithEvent(id self, SEL _cmd, NSEvent *event)
 + (void) pluginDidLoad:(NSBundle *)plugin
 {
 	Class DVWindow = NSClassFromString(@"DVWindow");
-	Method DVWindow_magnifyWithEvent = class_getInstanceMethod(DVWindow, @selector(magnifyWithEvent:));
-	method_setImplementation(DVWindow_magnifyWithEvent, (IMP)magnifyWithEvent);
-	class_addMethod(DVWindow, @selector(beginGestureWithEvent:), (IMP)beginGestureWithEvent, method_getTypeEncoding(DVWindow_magnifyWithEvent));
+	SEL beginGestureWithEvent = @selector(beginGestureWithEvent:);
+	SEL magnifyWithEvent = @selector(magnifyWithEvent:);
+	Method DVWindow_magnifyWithEvent = class_getInstanceMethod(DVWindow, magnifyWithEvent);
 	
-	BOOL success = DVWindow_magnifyWithEvent != NULL;
+	BOOL success = class_addMethod(DVWindow, beginGestureWithEvent, (IMP)docZoom_beginGestureWithEvent, method_getTypeEncoding(DVWindow_magnifyWithEvent));
+	if (success)
+		method_setImplementation(DVWindow_magnifyWithEvent, (IMP)docZoom_magnifyWithEvent);
 	
 	NSString *pluginName = [[[plugin bundlePath] lastPathComponent] stringByDeletingPathExtension];
 	NSString *version = [plugin objectForInfoDictionaryKey:@"CFBundleVersion"];
