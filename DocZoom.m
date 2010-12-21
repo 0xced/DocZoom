@@ -49,7 +49,7 @@ void docZoom_beginGestureWithEvent(id self, SEL _cmd, NSEvent *event)
 
 @implementation DocZoom
 
-+ (void) pluginDidLoad:(NSBundle *)plugin
++ (BOOL) install
 {
 	Class DVWindow = NSClassFromString(@"DVWindow");
 	SEL beginGestureWithEvent = @selector(beginGestureWithEvent:);
@@ -60,16 +60,19 @@ void docZoom_beginGestureWithEvent(id self, SEL _cmd, NSEvent *event)
 	if (success)
 		method_setImplementation(DVWindow_magnifyWithEvent, (IMP)docZoom_magnifyWithEvent);
 	
+	return success;
+}
+
++ (void) pluginDidLoad:(NSBundle *)plugin
+{
+	BOOL success = [self install];
+	
 	NSString *pluginName = [[[plugin bundlePath] lastPathComponent] stringByDeletingPathExtension];
 	NSString *version = [plugin objectForInfoDictionaryKey:@"CFBundleVersion"];
-	BOOL isXcode = [[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.Xcode"];
-	if (isXcode)
-	{
-		if (success)
-			NSLog(@"%@ %@ loaded successfully", pluginName, version);
-		else
-			NSLog(@"%@ %@ failed to load", pluginName, version);		
-	}
+	if (success)
+		NSLog(@"%@ %@ loaded successfully", pluginName, version);
+	else
+		NSLog(@"%@ %@ failed to load", pluginName, version);
 }
 
 @end

@@ -13,13 +13,13 @@
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>NSPrincipalClass</key>
 	<string>DocZoom</string>
 	<key>XCPluginHasUI</key>
-	<false/>
+	<true/>
 	<key>XCGCReady</key>
 	<true/>
 </dict>
